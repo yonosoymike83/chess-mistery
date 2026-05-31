@@ -3,22 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Chess Mystery Cache</title>
+
 <link rel="stylesheet" href="style.css">
+
+<script type="module" src="https://unpkg.com/chessboard-element?module"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/1.0.0/chess.min.js"></script>
+
 </head>
+
 <body>
+
 <div class="container">
-<h1 id="title">Cargando...</h1>
-<p id="description"></p>
-  <div id="board-container">
-    <div id="board"></div>
+
+    <h1 id="title">Cargando...</h1>
+
+    <p id="description"></p>
+
+    <chess-board id="board"></chess-board>
+
+    <div id="status">
+        Pendiente
+    </div>
+
+    <div id="success" class="hidden">
+
+        <h2>✅ Puzzle resuelto</h2>
+
+        <div id="coordinates"></div>
+
+        <button id="copyBtn">
+            📋 Copiar coordenadas
+        </button>
+
+    </div>
+
 </div>
-<div id="status">Pendiente</div>
-<div id="success" class="hidden">
-<h2>✅ Puzzle resuelto</h2>
-<div id="coordinates"></div>
-</div>
-</div>
+
 <script src="app.js"></script>
+
 </body>
 </html>
