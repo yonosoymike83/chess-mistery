@@ -6,7 +6,7 @@ async function loadPuzzle() {
 
     const params = new URLSearchParams(window.location.search);
 
-    const id = params.get("p") || "cache1";
+    const id = params.get("p") || "cache01";
 
     const response = await fetch(`puzzles/${id}.json`);
 
