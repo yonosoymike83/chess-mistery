@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chess Mystery Cache</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard-1.0.0.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1 id="title">Chess Mystery Cache</h1>
+
+    <p id="description">
+        Cargando puzzle...
+    </p>
+
+    <div id="board"></div>
+
+    <div id="status" class="status">
+        Pendiente
+    </div>
+
+    <div id="success" class="hidden">
+        <h2>✅ Puzzle resuelto</h2>
+
+        <div id="coordinates"></div>
+    </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard-1.0.0.min.js"></script>
+
+<script src="app.js"></script>
+
+</body>
+</html>
