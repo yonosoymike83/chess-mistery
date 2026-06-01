@@ -91,18 +91,24 @@ function handleMove(event) {
         return;
     }
 
-    // Solución correcta
-    if (
-        from === puzzle.solution.from &&
-        to === puzzle.solution.to
-    ) {
+    // Compatible con ambos formatos
+    const solved =
+        typeof puzzle.solution === "string"
+
+            ? move.san === puzzle.solution
+
+            : (
+                from === puzzle.solution.from &&
+                to === puzzle.solution.to
+            );
+
+    if (solved) {
 
         solvePuzzle();
 
         return;
     }
 
-    // Movimiento legal pero incorrecto
     document.getElementById(
         "status"
     ).textContent =
@@ -110,7 +116,7 @@ function handleMove(event) {
 
     setTimeout(
         resetBoard,
-        300
+        500
     );
 }
 
