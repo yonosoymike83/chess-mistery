@@ -1,4 +1,5 @@
 let puzzle;
+let board;
 
 async function loadPuzzle() {
 
@@ -21,12 +22,12 @@ async function loadPuzzle() {
         .textContent =
         puzzle.description;
 
-    const board =
-        document.getElementById("board");
-
     await customElements.whenDefined(
         "chess-board"
     );
+
+    board =
+        document.getElementById("board");
 
     board.setAttribute(
         "position",
@@ -48,15 +49,49 @@ async function loadPuzzle() {
         );
 }
 
-function handleMove(event) {
+function resetBoard() {
 
-    const from = event.detail.source;
-    const to = event.detail.target;
-
-    console.log(
-        from + " -> " + to
+    board.setPosition(
+        puzzle.fen.split(" ")[0]
     );
 
+    board.draggablePieces = true;
+}
+
+function handleMove(event) {
+
+    const from =
+        event.detail.source;
+
+    const to =
+        event.detail.target;
+
+    const game =
+        new Chess();
+
+    game.load(
+        puzzle.fen
+    );
+
+    const move =
+        game.move({
+            from: from,
+            to: to,
+            promotion: "q"
+        });
+
+    // Movimiento ilegal
+    if (!move) {
+
+        setTimeout(
+            resetBoard,
+            10
+        );
+
+        return;
+    }
+
+    // Solución correcta
     if (
         from === puzzle.solution.from &&
         to === puzzle.solution.to
@@ -67,10 +102,16 @@ function handleMove(event) {
         return;
     }
 
+    // Movimiento legal pero incorrecto
     document.getElementById(
         "status"
     ).textContent =
-        "❌ Movimiento incorrecto";
+        "❌ No es la solución";
+
+    setTimeout(
+        resetBoard,
+        300
+    );
 }
 
 function solvePuzzle() {
