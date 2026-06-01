@@ -1,6 +1,67 @@
 let puzzle;
 let board;
 
+let language =
+    localStorage.getItem("language");
+
+if (!language) {
+
+    const browserLang =
+        navigator.language.toLowerCase();
+
+    if (browserLang.startsWith("ca")) {
+
+        language = "ca";
+
+    } else if (browserLang.startsWith("en")) {
+
+        language = "en";
+
+    } else {
+
+        language = "es";
+    }
+}
+
+const translations = {
+
+    es: {
+        pending: "Pendiente",
+        solved: "✅ Mate encontrado",
+        wrong: "❌ No es la solución",
+        copied: "Coordenadas copiadas"
+    },
+
+    ca: {
+        pending: "Pendent",
+        solved: "✅ Escac i mat trobat",
+        wrong: "❌ No és la solució",
+        copied: "Coordenades copiades"
+    },
+
+    en: {
+        pending: "Pending",
+        solved: "✅ Checkmate found",
+        wrong: "❌ Not the solution",
+        copied: "Coordinates copied"
+    }
+};
+
+function t(key){
+
+    return translations[language][key];
+}
+
+function setLanguage(lang){
+
+    localStorage.setItem(
+        "language",
+        lang
+    );
+
+    location.reload();
+}
+
 async function loadPuzzle() {
 
     const id =
@@ -21,6 +82,10 @@ async function loadPuzzle() {
     document.getElementById("description")
         .textContent =
         puzzle.description;
+
+    document.getElementById("status")
+        .textContent =
+        t("pending");
 
     await customElements.whenDefined(
         "chess-board"
@@ -80,7 +145,6 @@ function handleMove(event) {
             promotion: "q"
         });
 
-    // Movimiento ilegal
     if (!move) {
 
         setTimeout(
@@ -91,7 +155,6 @@ function handleMove(event) {
         return;
     }
 
-    // Compatible con ambos formatos
     const solved =
         typeof puzzle.solution === "string"
 
@@ -112,7 +175,7 @@ function handleMove(event) {
     document.getElementById(
         "status"
     ).textContent =
-        "❌ No es la solución";
+        t("wrong");
 
     setTimeout(
         resetBoard,
@@ -125,7 +188,7 @@ function solvePuzzle() {
     document.getElementById(
         "status"
     ).textContent =
-        "✅ Mate encontrado";
+        t("solved");
 
     document.getElementById(
         "success"
@@ -149,7 +212,7 @@ ${puzzle.coordinates.lon}`
     );
 
     alert(
-        "Coordenadas copiadas"
+        t("copied")
     );
 }
 
