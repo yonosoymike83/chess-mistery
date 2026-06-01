@@ -27,7 +27,6 @@ const translations = {
 
     es: {
         pending: "Pendiente",
-        solved: "✅ Mate encontrado",
         wrong: "❌ No es la solución",
         copied: "Coordenadas copiadas",
         solvedTitle: "✅ Puzzle resuelto"
@@ -35,7 +34,6 @@ const translations = {
 
     ca: {
         pending: "Pendent",
-        solved: "✅ Escac i mat trobat",
         wrong: "❌ No és la solució",
         copied: "Coordenades copiades",
         solvedTitle: "✅ Trencaclosques resolt"
@@ -43,7 +41,6 @@ const translations = {
 
     en: {
         pending: "Pending",
-        solved: "✅ Checkmate found",
         wrong: "❌ Not the solution",
         copied: "Coordinates copied",
         solvedTitle: "✅ Puzzle solved"
@@ -168,7 +165,7 @@ function handleMove(event) {
         return;
     }
 
-    // Compatible con formato SAN y formato antiguo
+    // Compatible con SAN y formato antiguo
     const solved =
         typeof puzzle.solution === "string"
 
@@ -201,8 +198,8 @@ function solvePuzzle() {
 
     document.getElementById(
         "status"
-    ).textContent =
-        t("solved");
+    ).style.display =
+        "none";
 
     document.getElementById(
         "success"
