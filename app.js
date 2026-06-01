@@ -36,7 +36,7 @@ const translations = {
         pending: "Pendent",
         wrong: "❌ No és la solució",
         copied: "Coordenades copiades",
-        solvedTitle: "✅ Trencaclosques resolt"
+        solvedTitle: "✅ Puzle resolt"
     },
 
     en: {
