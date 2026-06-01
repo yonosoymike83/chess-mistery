@@ -27,9 +27,9 @@ async function loadPuzzle(){
     const board =
         document.getElementById("board");
 
-board.position =
-    game.fen();
-
+board.position = 
+    puzzle.fen.split(" ")[0];
+    
     board.addEventListener(
         "drop",
         handleMove
@@ -82,9 +82,9 @@ function handleMove(event){
 
        document
     .getElementById("board")
-    .position =
-    game.fen();
-
+    .position = 
+           puzzle.fen.split(" ")[0];
+        
         document.getElementById(
             "status"
         ).textContent =
