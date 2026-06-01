@@ -39,7 +39,7 @@ board.setAttribute(
     board.draggablePieces = true;
     
     board.addEventListener(
-        "move-input",
+        "drop",
         handleMove
     );
 
@@ -53,8 +53,22 @@ board.setAttribute(
 
 function handleMove(event){
 
-    console.log(event);
+    const from = event.detail.source;
+    const to   = event.detail.target;
 
+    console.log(from, "->", to);
+
+    if(
+    from === puzzle.solution.from &&
+    to === puzzle.solution.to
+){
+    solvePuzzle();
+}
+
+    document.getElementById(
+        "status"
+    ).textContent =
+        "❌ Movimiento incorrecto";
 }
 
     if(!move){
