@@ -1,5 +1,7 @@
 let puzzle;
 let board;
+let game;
+let currentStep = 0;
 
 let language =
     localStorage.getItem("language");
@@ -84,6 +86,10 @@ async function loadPuzzle() {
         puzzle.description[language];
 
     document.getElementById("status")
+        .style.display =
+        "block";
+
+    document.getElementById("status")
         .textContent =
         t("pending");
 
@@ -96,6 +102,10 @@ async function loadPuzzle() {
             t("solvedTitle");
     }
 
+    game = new Chess(
+        puzzle.fen
+    );
+
     await customElements.whenDefined(
         "chess-board"
     );
@@ -105,7 +115,7 @@ async function loadPuzzle() {
 
     board.setAttribute(
         "position",
-        puzzle.fen.split(" ")[0]
+        game.fen()
     );
 
     board.draggablePieces = true;
@@ -125,11 +135,27 @@ async function loadPuzzle() {
 
 function resetBoard() {
 
+    currentStep = 0;
+
+    game = new Chess(
+        puzzle.fen
+    );
+
     board.setPosition(
-        puzzle.fen.split(" ")[0]
+        game.fen()
     );
 
     board.draggablePieces = true;
+
+    document.getElementById(
+        "status"
+    ).style.display =
+        "block";
+
+    document.getElementById(
+        "status"
+    ).textContent =
+        t("pending");
 }
 
 function handleMove(event) {
@@ -139,13 +165,6 @@ function handleMove(event) {
 
     const to =
         event.detail.target;
-
-    const game =
-        new Chess();
-
-    game.load(
-        puzzle.fen
-    );
 
     const move =
         game.move({
@@ -157,23 +176,104 @@ function handleMove(event) {
     // Movimiento ilegal
     if (!move) {
 
-        setTimeout(
-            resetBoard,
-            10
-        );
+        setTimeout(() => {
+
+            board.setPosition(
+                game.fen()
+            );
+
+        }, 10);
 
         return;
     }
 
-    // Compatible con SAN y formato antiguo
-    const solved =
-        typeof puzzle.solution === "string"
+    // ==========================
+    // PUZZLES MULTI-MOVIMIENTO
+    // ==========================
 
-            ? move.san === puzzle.solution
+    if (puzzle.moves) {
+
+        const expectedMove =
+            puzzle.moves[currentStep];
+
+        if (
+            move.san !==
+            expectedMove
+        ) {
+
+            document.getElementById(
+                "status"
+            ).textContent =
+                t("wrong");
+
+            setTimeout(
+                resetBoard,
+                1000
+            );
+
+            return;
+        }
+
+        currentStep++;
+
+        board.setPosition(
+            game.fen()
+        );
+
+        if (
+            currentStep >=
+            puzzle.moves.length
+        ) {
+
+            solvePuzzle();
+
+            return;
+        }
+
+        const reply =
+            puzzle.moves[currentStep];
+
+        setTimeout(() => {
+
+            game.move(
+                reply
+            );
+
+            board.setPosition(
+                game.fen()
+            );
+
+            currentStep++;
+
+            if (
+                currentStep >=
+                puzzle.moves.length
+            ) {
+
+                solvePuzzle();
+            }
+
+        }, 500);
+
+        return;
+    }
+
+    // ==========================
+    // PUZZLES CLÁSICOS
+    // ==========================
+
+    const solved =
+        typeof puzzle.solution ===
+        "string"
+
+            ? move.san ===
+              puzzle.solution
 
             : (
-                from === puzzle.solution.from &&
-                to === puzzle.solution.to
+                from ===
+                    puzzle.solution.from &&
+                to ===
+                    puzzle.solution.to
             );
 
     if (solved) {
