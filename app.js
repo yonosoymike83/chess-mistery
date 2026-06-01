@@ -27,6 +27,10 @@ async function loadPuzzle(){
     const board =
         document.getElementById("board");
 
+await customElements.whenDefined(
+    "chess-board"
+);
+    
 board.setAttribute(
     "position",
     puzzle.fen.split(" ")[0]
@@ -130,4 +134,4 @@ ${puzzle.coordinates.lon}`
     );
 }
 
-loadPuzzle();
+window.onload = loadPuzzle;
