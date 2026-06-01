@@ -1,8 +1,20 @@
 {
-  "title": "Mate en 1",
-  "description": "Las blancas juegan y dan mate en una jugada.",
+  "title": {
+    "ca": "Escac i Mat en 1",
+    "es": "Jaque Mate en 1",
+    "en": "CheckMate in 1"
+  },
+
+  "description": {
+    "ca": "Les blanques juguen i fan escac i mat en una jugada.",
+    "es": "Las blancas juegan y dan jaque mate en una jugada.",
+    "en": "White to move and checkmate in one move."
+  },
+
   "fen": "8/3n1q1p/kpQB4/p7/P1p4P/8/1Pp2PP1/6K1 w - - 0 33",
+
   "solution": "Qa8#",
+
   "coordinates": {
     "lat": "N 41° 24.203",
     "lon": "E 002° 10.442"
