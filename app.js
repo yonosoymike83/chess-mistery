@@ -1,7 +1,6 @@
 let puzzle;
-let game;
 
-async function loadPuzzle(){
+async function loadPuzzle() {
 
     const id =
         new URLSearchParams(location.search)
@@ -22,22 +21,20 @@ async function loadPuzzle(){
         .textContent =
         puzzle.description;
 
-    game = new Chess(puzzle.fen);
-
     const board =
         document.getElementById("board");
 
-await customElements.whenDefined(
-    "chess-board"
-);
-    
-board.setAttribute(
-    "position",
-    puzzle.fen.split(" ")[0]
-);
+    await customElements.whenDefined(
+        "chess-board"
+    );
+
+    board.setAttribute(
+        "position",
+        puzzle.fen.split(" ")[0]
+    );
 
     board.draggablePieces = true;
-    
+
     board.addEventListener(
         "drop",
         handleMove
@@ -51,38 +48,19 @@ board.setAttribute(
         );
 }
 
-function handleMove(event){
+function handleMove(event) {
 
     const from = event.detail.source;
-    const to   = event.detail.target;
+    const to = event.detail.target;
 
-    console.log(from, "->", to);
+    console.log(
+        from + " -> " + to
+    );
 
-    if(
-    from === puzzle.solution.from &&
-    to === puzzle.solution.to
-){
-    solvePuzzle();
-}
-
-    document.getElementById(
-        "status"
-    ).textContent =
-        "❌ Movimiento incorrecto";
-}
-
-    if(!move){
-
-        event.preventDefault();
-
-        return;
-    }
-
-    const san = move.san;
-
-    if(
-        san === puzzle.solution
-    ){
+    if (
+        from === puzzle.solution.from &&
+        to === puzzle.solution.to
+    ) {
 
         solvePuzzle();
 
@@ -93,29 +71,9 @@ function handleMove(event){
         "status"
     ).textContent =
         "❌ Movimiento incorrecto";
-
-    setTimeout(()=>{
-
-        game = new Chess(
-            puzzle.fen
-        );
-
-       document
-    .getElementById("board")
-    .setAttribute(
-        "position",
-        puzzle.fen.split(" ")[0]
-        );
-        
-        document.getElementById(
-            "status"
-        ).textContent =
-            "Pendiente";
-
-    },1000);
 }
 
-function solvePuzzle(){
+function solvePuzzle() {
 
     document.getElementById(
         "status"
@@ -136,7 +94,7 @@ function solvePuzzle(){
     `;
 }
 
-function copyCoords(){
+function copyCoords() {
 
     navigator.clipboard.writeText(
 `${puzzle.coordinates.lat}
