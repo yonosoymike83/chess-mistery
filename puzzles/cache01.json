@@ -2,10 +2,7 @@
   "title": "Mate en 1",
   "description": "Las blancas juegan y dan mate en una jugada.",
   "fen": "8/3n1q1p/kpQB4/p7/P1p4P/8/1Pp2PP1/6K1 w - - 0 33",
-  "solution": {
-    "from": "c6",
-    "to": "a8"
-  },
+  "solution": "Qa8#",
   "coordinates": {
     "lat": "N 41° 24.203",
     "lon": "E 002° 10.442"
