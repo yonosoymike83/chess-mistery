@@ -39,7 +39,7 @@ board.setAttribute(
     board.draggablePieces = true;
     
     board.addEventListener(
-        "drop",
+        "move-input",
         handleMove
     );
 
@@ -53,11 +53,9 @@ board.setAttribute(
 
 function handleMove(event){
 
-    const move = game.move({
-        from:event.detail.source,
-        to:event.detail.target,
-        promotion:"q"
-    });
+    console.log(event);
+
+}
 
     if(!move){
 
