@@ -29,30 +29,33 @@ const translations = {
         pending: "Pendiente",
         solved: "✅ Mate encontrado",
         wrong: "❌ No es la solución",
-        copied: "Coordenadas copiadas"
+        copied: "Coordenadas copiadas",
+        solvedTitle: "✅ Puzzle resuelto"
     },
 
     ca: {
         pending: "Pendent",
         solved: "✅ Escac i mat trobat",
         wrong: "❌ No és la solució",
-        copied: "Coordenades copiades"
+        copied: "Coordenades copiades",
+        solvedTitle: "✅ Trencaclosques resolt"
     },
 
     en: {
         pending: "Pending",
         solved: "✅ Checkmate found",
         wrong: "❌ Not the solution",
-        copied: "Coordinates copied"
+        copied: "Coordinates copied",
+        solvedTitle: "✅ Puzzle solved"
     }
 };
 
-function t(key){
+function t(key) {
 
     return translations[language][key];
 }
 
-function setLanguage(lang){
+function setLanguage(lang) {
 
     localStorage.setItem(
         "language",
@@ -77,15 +80,24 @@ async function loadPuzzle() {
 
     document.getElementById("title")
         .textContent =
-        puzzle.title;
+        puzzle.title[language];
 
     document.getElementById("description")
         .textContent =
-        puzzle.description;
+        puzzle.description[language];
 
     document.getElementById("status")
         .textContent =
         t("pending");
+
+    const solvedTitle =
+        document.querySelector("#success h2");
+
+    if (solvedTitle) {
+
+        solvedTitle.textContent =
+            t("solvedTitle");
+    }
 
     await customElements.whenDefined(
         "chess-board"
@@ -145,6 +157,7 @@ function handleMove(event) {
             promotion: "q"
         });
 
+    // Movimiento ilegal
     if (!move) {
 
         setTimeout(
@@ -155,6 +168,7 @@ function handleMove(event) {
         return;
     }
 
+    // Compatible con formato SAN y formato antiguo
     const solved =
         typeof puzzle.solution === "string"
 
