@@ -27,8 +27,10 @@ async function loadPuzzle(){
     const board =
         document.getElementById("board");
 
-board.position = 
-    puzzle.fen.split(" ")[0];
+board.setAttribute(
+    "position",
+    puzzle.fen.split(" ")[0]
+);
     
     board.addEventListener(
         "drop",
@@ -82,8 +84,10 @@ function handleMove(event){
 
        document
     .getElementById("board")
-    .position = 
-           puzzle.fen.split(" ")[0];
+    .setAttribute(
+        "position",
+        puzzle.fen.split(" ")[0]
+        );
         
         document.getElementById(
             "status"
