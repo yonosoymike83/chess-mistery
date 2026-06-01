@@ -35,6 +35,8 @@ board.setAttribute(
     "position",
     puzzle.fen.split(" ")[0]
 );
+
+    board.draggablePieces = true;
     
     board.addEventListener(
         "drop",
