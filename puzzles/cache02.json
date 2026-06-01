@@ -1,0 +1,30 @@
+{
+  "title": {
+    "ca": "Escac i Mat Ofegat",
+    "es": "Jaque Mate Ahogado",
+    "en": "Smothered Mate"
+  },
+
+  "description": {
+    "ca": "Les blanques juguen i troben la combinació guanyadora.",
+    "es": "Las blancas juegan y encuentran la combinación ganadora.",
+    "en": "White to move and find the winning combination."
+  },
+
+  "fen": "3r3k/2pRp1pp/2p5/p4pN1/2Q3n1/q5P1/P3PP1P/6K1 w - - 0 27",
+
+  "moves": [
+    "Nf7+",
+    "Kg8",
+    "Nh6+",
+    "Kh8",
+    "Qg8+",
+    "Rxg8",
+    "Nf7#"
+  ],
+
+  "coordinates": {
+    "lat": "N 00° 00.000",
+    "lon": "E 000° 00.000"
+  }
+}
