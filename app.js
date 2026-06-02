@@ -4,221 +4,260 @@ let game;
 let currentStep = 0;
 
 let language =
-    localStorage.getItem("language");
+localStorage.getItem("language");
 
 if (!language) {
 
-    const browserLang =
-        navigator.language.toLowerCase();
+const browserLang =
+    navigator.language.toLowerCase();
 
-    if (browserLang.startsWith("ca")) {
+if (browserLang.startsWith("ca")) {
 
-        language = "ca";
+    language = "ca";
 
-    } else if (browserLang.startsWith("en")) {
+} else if (browserLang.startsWith("en")) {
 
-        language = "en";
+    language = "en";
 
-    } else {
+} else {
 
-        language = "es";
-    }
+    language = "es";
+}
+
 }
 
 const translations = {
 
-    es: {
-        pending: "Pendiente",
-        wrong: "❌ No es la solución",
-        copied: "Coordenadas copiadas",
-        solvedTitle: "✅ Puzzle resuelto"
-    },
+es: {
+    pending: "Pendiente",
+    wrong: "❌ No es la solución",
+    copied: "Coordenadas copiadas",
+    solvedTitle: "✅ Puzzle resuelto",
+    copyButton: "📋 Copiar coordenadas"
+},
 
-    ca: {
-        pending: "Pendent",
-        wrong: "❌ No és la solució",
-        copied: "Coordenades copiades",
-        solvedTitle: "✅ Puzle resolt"
-    },
+ca: {
+    pending: "Pendent",
+    wrong: "❌ No és la solució",
+    copied: "Coordenades copiades",
+    solvedTitle: "✅ Puzle resolt",
+    copyButton: "📋 Copiar coordenades"
+},
 
-    en: {
-        pending: "Pending",
-        wrong: "❌ Not the solution",
-        copied: "Coordinates copied",
-        solvedTitle: "✅ Puzzle solved"
-    }
+en: {
+    pending: "Pending",
+    wrong: "❌ Not the solution",
+    copied: "Coordinates copied",
+    solvedTitle: "✅ Puzzle solved",
+    copyButton: "📋 Copy coordinates"
+}
+
 };
 
 function t(key) {
 
-    return translations[language][key];
+return translations[language][key];
+
 }
 
 function setLanguage(lang) {
 
-    localStorage.setItem(
-        "language",
-        lang
-    );
+localStorage.setItem(
+    "language",
+    lang
+);
 
-    location.reload();
+location.reload();
+
 }
 
 async function loadPuzzle() {
 
-    const id =
-        new URLSearchParams(location.search)
-        .get("p") || "cache01";
+const id =
+    new URLSearchParams(location.search)
+    .get("p") || "cache01";
 
-    puzzle =
-        await (
-            await fetch(
-                `puzzles/${id}.json`
-            )
-        ).json();
+puzzle =
+    await (
+        await fetch(
+            `puzzles/${id}.json`
+        )
+    ).json();
 
-    document.getElementById("title")
-        .textContent =
-        puzzle.title[language];
+document.getElementById("title")
+    .textContent =
+    puzzle.title[language];
 
-    document.getElementById("description")
-        .textContent =
-        puzzle.description[language];
+document.getElementById("description")
+    .textContent =
+    puzzle.description[language];
 
-    document.getElementById("status")
-        .style.display =
-        "block";
+document.getElementById("status")
+    .style.display =
+    "block";
 
-    document.getElementById("status")
-        .textContent =
-        t("pending");
+document.getElementById("status")
+    .textContent =
+    t("pending");
 
-    const solvedTitle =
-        document.querySelector("#success h2");
+const solvedTitle =
+    document.querySelector("#success h2");
 
-    if (solvedTitle) {
+if (solvedTitle) {
 
-        solvedTitle.textContent =
-            t("solvedTitle");
-    }
+    solvedTitle.textContent =
+        t("solvedTitle");
+}
 
-    game = new Chess(
-        puzzle.fen
+document.getElementById(
+    "copyBtn"
+).textContent =
+    t("copyButton");
+
+game = new Chess(
+    puzzle.fen
+);
+
+await customElements.whenDefined(
+    "chess-board"
+);
+
+board =
+    document.getElementById("board");
+
+board.setAttribute(
+    "position",
+    game.fen()
+);
+
+board.draggablePieces = true;
+
+board.addEventListener(
+    "drop",
+    handleMove
+);
+
+document
+    .getElementById("copyBtn")
+    .addEventListener(
+        "click",
+        copyCoords
     );
 
-    await customElements.whenDefined(
-        "chess-board"
-    );
-
-    board =
-        document.getElementById("board");
-
-    board.setAttribute(
-        "position",
-        game.fen()
-    );
-
-    board.draggablePieces = true;
-
-    board.addEventListener(
-        "drop",
-        handleMove
-    );
-
-    document
-        .getElementById("copyBtn")
-        .addEventListener(
-            "click",
-            copyCoords
-        );
 }
 
 function resetBoard() {
 
-    currentStep = 0;
+currentStep = 0;
 
-    game = new Chess(
-        puzzle.fen
-    );
+game = new Chess(
+    puzzle.fen
+);
+
+board.setPosition(
+    game.fen()
+);
+
+board.draggablePieces = true;
+
+document.getElementById(
+    "status"
+).style.display =
+    "block";
+
+document.getElementById(
+    "status"
+).textContent =
+    t("pending");
+
+}
+
+function handleMove(event) {
+
+const from =
+    event.detail.source;
+
+const to =
+    event.detail.target;
+
+const move =
+    game.move({
+        from: from,
+        to: to,
+        promotion: "q"
+    });
+
+// Movimiento ilegal
+if (!move) {
+
+    setTimeout(() => {
+
+        board.setPosition(
+            game.fen()
+        );
+
+    }, 10);
+
+    return;
+}
+
+// ==========================
+// PUZZLES MULTI-MOVIMIENTO
+// ==========================
+
+if (puzzle.moves) {
+
+    const expectedMove =
+        puzzle.moves[currentStep];
+
+    if (
+        move.san !==
+        expectedMove
+    ) {
+
+        document.getElementById(
+            "status"
+        ).textContent =
+            t("wrong");
+
+        setTimeout(
+            resetBoard,
+            1000
+        );
+
+        return;
+    }
+
+    currentStep++;
 
     board.setPosition(
         game.fen()
     );
 
-    board.draggablePieces = true;
+    if (
+        currentStep >=
+        puzzle.moves.length
+    ) {
 
-    document.getElementById(
-        "status"
-    ).style.display =
-        "block";
-
-    document.getElementById(
-        "status"
-    ).textContent =
-        t("pending");
-}
-
-function handleMove(event) {
-
-    const from =
-        event.detail.source;
-
-    const to =
-        event.detail.target;
-
-    const move =
-        game.move({
-            from: from,
-            to: to,
-            promotion: "q"
-        });
-
-    // Movimiento ilegal
-    if (!move) {
-
-        setTimeout(() => {
-
-            board.setPosition(
-                game.fen()
-            );
-
-        }, 10);
+        solvePuzzle();
 
         return;
     }
 
-    // ==========================
-    // PUZZLES MULTI-MOVIMIENTO
-    // ==========================
+    const reply =
+        puzzle.moves[currentStep];
 
-    if (puzzle.moves) {
+    setTimeout(() => {
 
-        const expectedMove =
-            puzzle.moves[currentStep];
-
-        if (
-            move.san !==
-            expectedMove
-        ) {
-
-            document.getElementById(
-                "status"
-            ).textContent =
-                t("wrong");
-
-            setTimeout(
-                resetBoard,
-                1000
-            );
-
-            return;
-        }
-
-        currentStep++;
+        game.move(
+            reply
+        );
 
         board.setPosition(
             game.fen()
         );
+
+        currentStep++;
 
         if (
             currentStep >=
@@ -226,105 +265,83 @@ function handleMove(event) {
         ) {
 
             solvePuzzle();
-
-            return;
         }
 
-        const reply =
-            puzzle.moves[currentStep];
+    }, 500);
 
-        setTimeout(() => {
+    return;
+}
 
-            game.move(
-                reply
-            );
+// ==========================
+// PUZZLES CLÁSICOS
+// ==========================
 
-            board.setPosition(
-                game.fen()
-            );
+const solved =
+    typeof puzzle.solution ===
+    "string"
 
-            currentStep++;
+        ? move.san ===
+          puzzle.solution
 
-            if (
-                currentStep >=
-                puzzle.moves.length
-            ) {
+        : (
+            from ===
+                puzzle.solution.from &&
+            to ===
+                puzzle.solution.to
+        );
 
-                solvePuzzle();
-            }
+if (solved) {
 
-        }, 500);
+    solvePuzzle();
 
-        return;
-    }
+    return;
+}
 
-    // ==========================
-    // PUZZLES CLÁSICOS
-    // ==========================
+document.getElementById(
+    "status"
+).textContent =
+    t("wrong");
 
-    const solved =
-        typeof puzzle.solution ===
-        "string"
+setTimeout(
+    resetBoard,
+    500
+);
 
-            ? move.san ===
-              puzzle.solution
-
-            : (
-                from ===
-                    puzzle.solution.from &&
-                to ===
-                    puzzle.solution.to
-            );
-
-    if (solved) {
-
-        solvePuzzle();
-
-        return;
-    }
-
-    document.getElementById(
-        "status"
-    ).textContent =
-        t("wrong");
-
-    setTimeout(
-        resetBoard,
-        500
-    );
 }
 
 function solvePuzzle() {
 
-    document.getElementById(
-        "status"
-    ).style.display =
-        "none";
+document.getElementById(
+    "status"
+).style.display =
+    "none";
 
-    document.getElementById(
-        "success"
-    ).classList.remove(
-        "hidden"
-    );
+document.getElementById(
+    "success"
+).classList.remove(
+    "hidden"
+);
 
-    document.getElementById(
-        "coordinates"
-    ).innerHTML = `
-        <p>${puzzle.coordinates.lat}</p>
-        <p>${puzzle.coordinates.lon}</p>
-    `;
+document.getElementById(
+    "coordinates"
+).innerHTML = `
+    <p>${puzzle.coordinates.lat}</p>
+    <p>${puzzle.coordinates.lon}</p>
+`;
+
 }
 
 function copyCoords() {
 
-    navigator.clipboard.writeText(
-`${puzzle.coordinates.lat}
-${puzzle.coordinates.lon}`
-    );
+navigator.clipboard.writeText(
 
-    alert(
-        t("copied")
-    );
+"${puzzle.coordinates.lat} ${puzzle.coordinates.lon}"
+);
+
+alert(
+    t("copied")
+);
+
 }
 
 window.onload = loadPuzzle;
